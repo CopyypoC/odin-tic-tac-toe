@@ -21,6 +21,8 @@ const Gameboard = (function() {
         }
     }
 
+    const getBoard = () => board;
+
     const placeMarker = (player, row, column) => {
         if (board[row][column] === 0) {
             board[row][column] = player.marker;
@@ -30,7 +32,7 @@ const Gameboard = (function() {
     const printBoard = () => {
         console.log(board);
     }
-    return {placeMarker, printBoard};
+    return {getBoard, placeMarker, printBoard};
 }());
 
 /*  Player sets names and markers for both players and changes the turns
@@ -40,40 +42,46 @@ const Gameboard = (function() {
 */
 function Player(name, number) {
     const marker = number === 1 ? 'X' : 'O';
-    return {name, number, marker}
+    let score = 0;
+    return {name, number, marker, score}
 }
 
 /*  Score checks rows, columns, and diagonals for all three cells and if
     they match (same marker in each) then that player wins the round
 */
-function Score(board, marker) {
-    let score = 0;
+function GameRules(board, marker) {
     let isWinner = false;
+    let markerCount = 0;
 
     function checkRows() {
         for (let row = 0; row < board.length; row++) {
-            for (let column = 0; column < board[column].length; column++) {
-                if (board[row][column] !== marker) continue;
-                isWinner = true;
+            for (let column = 0; column < board[0].length; column++) {
+                if (board[row][column] === marker) markerCount++;
+                if (markerCount === 3) isWinner = true;
             }
+            markerCount = 0;
         }
     }
 
     function checkColumns(column) {
         for (let row = 0; row < board.length; row++) {
-            if (board[row][column] !== marker) continue;
-            isWinner = true;
+            if (board[row][column] === marker) markerCount++;
+            if (markerCount === 3) isWinner = true;
         }
+        markerCount = 0;
     }
 
     function checkDiagonals() {
-        if (board[0][0] !== marker) return;
-        if (board[1][1] !== marker) return;
-        if (board[2][2] !== marker) return;
-
-        if (board[0][2] !== marker) return;
-        if (board[1][1] !== marker) return;
-        if (board[2][0] !== marker) return;
+        if ((board[0][0] === marker) &&
+            (board[1][1] === marker) &&
+            (board[2][2] === marker)) {
+            isWinner = true;
+        }
+        if ((board[0][2] !== marker) &&
+            (board[1][1] !== marker) &&
+            (board[2][0] !== marker)) {
+            isWinner = true;
+            }
     }
 
     const checkWin = () => {
@@ -84,10 +92,8 @@ function Score(board, marker) {
         }
     }
 
-    const updateScore = (isWinner) => {
-        isWinner ? score++ : score;
-    }
-    return {checkWin, updateScore}
+    const getWinner = () => isWinner
+    return {checkWin, getWinner}
 };
 
 /*  GameController controls the flow of the game
@@ -102,6 +108,7 @@ const GameController = (function() {
     const player1 = Player('Player 1', 1);
     const player2 = Player('Player 2', 2);
     let currentPlayer = player1;
+    let scoreHandler = GameRules(Gameboard.getBoard(), currentPlayer.marker);
 
     function switchPlayer(player) {
         currentPlayer = player.number === 1 ? player2 : player1;
@@ -111,7 +118,11 @@ const GameController = (function() {
         const rowChoice = Number(prompt('Choose the row'));
         const columnChoice = Number(prompt('Choose the column'));
         Gameboard.placeMarker(currentPlayer, rowChoice, columnChoice);
-        // Score.updateScore();
+        scoreHandler.checkWin();
+        if (scoreHandler.getWinner()) {
+            console.log(`Winner: ${currentPlayer.name}!`);
+            currentPlayer.score++;
+        }
         switchPlayer(currentPlayer);
     }
 
