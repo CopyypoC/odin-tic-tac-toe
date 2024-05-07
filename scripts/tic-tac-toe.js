@@ -21,8 +21,6 @@ const Gameboard = (function() {
         }
     }
 
-    const getBoard = () => board;
-
     const placeMarker = (player, row, column) => {
         if (board[row][column] === 0) {
             board[row][column] = player.marker;
@@ -32,7 +30,7 @@ const Gameboard = (function() {
     const printBoard = () => {
         console.log(board);
     }
-    return {getBoard, placeMarker, printBoard};
+    return {placeMarker, printBoard};
 }());
 
 /*  Player sets names and markers for both players and changes the turns
@@ -92,7 +90,7 @@ function Score(board, marker) {
     return {checkWin, updateScore}
 };
 
-/*  GameController calls everything together to play each round
+/*  GameController controls the flow of the game
     Sets up each player
     Gets the board
     Player plays their turn
@@ -106,7 +104,7 @@ const GameController = (function() {
     let currentPlayer = player1;
 
     function switchPlayer(player) {
-        currentPlayer = player.number === 1 ? 2 : 1;
+        currentPlayer = player.number === 1 ? player2 : player1;
     }
 
     function playRound() {
@@ -125,5 +123,8 @@ const GameController = (function() {
 }());
 
 GameController.printNewRound();
-GameController.playRound();
-GameController.printNewRound();
+const playBtn = document.querySelector('.play-btn');
+playBtn.addEventListener('click', () => {
+    GameController.playRound();
+    GameController.printNewRound();
+})
