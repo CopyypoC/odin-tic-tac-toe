@@ -14,12 +14,15 @@ const Gameboard = (function() {
     const columns = 3;
     let board = [];
 
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-        for (let j = 0; j < columns; j++) {
-            board[i][j] = 0;
+    function createBoard() {
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < columns; j++) {
+                board[i][j] = 0;
+            }
         }
     }
+    createBoard();
 
     const getBoard = () => board;
 
@@ -29,10 +32,14 @@ const Gameboard = (function() {
         }
     }
 
+    const resetBoard = () => {
+        createBoard();
+    }
+
     const printBoard = () => {
         console.log(board);
     }
-    return {getBoard, placeMarker, printBoard};
+    return {getBoard, placeMarker, resetBoard, printBoard};
 }());
 
 /*  Player sets names and markers for both players and changes the turns
@@ -77,11 +84,21 @@ function GameRules(board, marker) {
             (board[2][2] === marker)) {
             isWinner = true;
         }
-        if ((board[0][2] !== marker) &&
-            (board[1][1] !== marker) &&
-            (board[2][0] !== marker)) {
+        if ((board[0][2] == marker) &&
+            (board[1][1] == marker) &&
+            (board[2][0] == marker)) {
             isWinner = true;
             }
+    }
+
+    function checkTie() {
+        let cellCount = 0;
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[0].length; col++) {
+                if (board[row][col] !== 0) cellCount++;
+            }
+        }
+        if (cellCount === 9) isWinner = 'tie';
     }
 
     const checkWin = () => {
@@ -90,6 +107,7 @@ function GameRules(board, marker) {
         for (let column = 0; column < board[0].length; column++) {
             checkColumns(column);
         }
+        if (!isWinner) checkTie();
     }
 
     const getWinner = () => isWinner
@@ -119,9 +137,16 @@ const GameController = (function() {
         const columnChoice = Number(prompt('Choose the column'));
         Gameboard.placeMarker(currentPlayer, rowChoice, columnChoice);
         scoreHandler.checkWin();
+
         if (scoreHandler.getWinner()) {
             console.log(`Winner: ${currentPlayer.name}!`);
             currentPlayer.score++;
+            Gameboard.resetBoard();
+            currentPlayer = player2;
+        } else if (scoreHandler.getWinner() === 'tie') {
+            console.log('Tied!');
+            Gameboard.resetBoard();
+            currentPlayer = player2;
         }
         switchPlayer(currentPlayer);
     }
