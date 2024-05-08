@@ -27,6 +27,10 @@ const Gameboard = (function() {
     const getBoard = () => board;
 
     const placeMarker = (player, row, column) => {
+        while (board[row][column] !== 0) {
+            row = Number(prompt('Choose the row 0-2'));
+            column = Number(prompt('Choose the column 0-2'));
+        }
         if (board[row][column] === 0) {
             board[row][column] = player.marker;
         }
@@ -133,8 +137,8 @@ const GameController = (function() {
     }
 
     function playRound() {
-        const rowChoice = Number(prompt('Choose the row'));
-        const columnChoice = Number(prompt('Choose the column'));
+        const rowChoice = Number(prompt('Choose the row 0-2'));
+        const columnChoice = Number(prompt('Choose the column 0-2'));
         Gameboard.placeMarker(currentPlayer, rowChoice, columnChoice);
         scoreHandler.checkWin();
 
