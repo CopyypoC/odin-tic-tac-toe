@@ -152,11 +152,9 @@ const GameController = (function() {
                 console.log(`Winner: ${currentPlayer.name}!`);
                 currentPlayer.score++;
                 winner = currentPlayer;
-                currentPlayer = player1;
                 return scoreHandler.getWinner();
             } else if (scoreHandler.getWinner() === 'tie') {
                 console.log('Tied!');
-                currentPlayer = player1;
                 return scoreHandler.getWinner();
             }
             switchPlayer(currentPlayer);
@@ -184,13 +182,14 @@ const GameController = (function() {
         player2.name = e.target.value;
     })
 
-    return {playRound, printNewRound, getWinner, getPlayer}
+    return {playRound, printNewRound, getWinner, getPlayer, resetPlayer}
 }());
 
 GameController.printNewRound();
 
 // Updates the DOM board to match the Gameboard
 const ScreenController = (function() {
+    const restartBtn = document.querySelector('.restart-btn');
     const boardContainer = document.querySelector('.board-container');
     const cellList = document.getElementsByClassName('cell');
     const board = Gameboard.getBoard();
@@ -205,6 +204,7 @@ const ScreenController = (function() {
         if (isWinner) {
             ScreenNotifications.updateWinner(isWinner);
             ScreenNotifications.showResults();
+            GameController.resetPlayer();
         }
         GameController.printNewRound();
     })
@@ -228,6 +228,11 @@ const ScreenController = (function() {
         }
     }
     
+    restartBtn.addEventListener('click', () => {
+        resetBoard();
+        GameController.resetPlayer();
+    })
+
     return {resetBoard};
 })();
 
