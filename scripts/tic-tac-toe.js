@@ -26,14 +26,13 @@ const Gameboard = (function() {
 
     const getBoard = () => board;
 
-    const placeMarker = (player, row, column) => {
-        while (board[row][column] !== 0) {
-            row = Number(prompt('Choose the row 0-2'));
-            column = Number(prompt('Choose the column 0-2'));
-        }
+    const placeMarker = (player, row, column, isValidCell = false) => {
+        isValidCell = false;
         if (board[row][column] === 0) {
             board[row][column] = player.marker;
+            isValidCell = true;
         }
+        return isValidCell;
     }
 
     const resetBoard = () => {
@@ -54,7 +53,7 @@ const Gameboard = (function() {
 function Player(name, number) {
     const marker = number === 1 ? 'X' : 'O';
     let score = 0;
-    return {name, number, marker, score}
+    return {name, number, marker, score};
 }
 
 /*  Score checks rows, columns, and diagonals for all three cells and if
@@ -115,7 +114,7 @@ function GameRules(board, marker) {
     }
 
     const getWinner = () => isWinner
-    return {checkWin, getWinner}
+    return {checkWin, getWinner};
 };
 
 /*  GameController controls the flow of the game
@@ -130,41 +129,108 @@ const GameController = (function() {
     const player1 = Player('Player 1', 1);
     const player2 = Player('Player 2', 2);
     let currentPlayer = player1;
-    let scoreHandler = GameRules(Gameboard.getBoard(), currentPlayer.marker);
+    let winner;
+    const scoreHandler = GameRules(Gameboard.getBoard(), currentPlayer.marker);
+    let isValidCell = false;
 
     function switchPlayer(player) {
         currentPlayer = player.number === 1 ? player2 : player1;
     }
 
-    function playRound() {
-        const rowChoice = Number(prompt('Choose the row 0-2'));
-        const columnChoice = Number(prompt('Choose the column 0-2'));
-        Gameboard.placeMarker(currentPlayer, rowChoice, columnChoice);
-        scoreHandler.checkWin();
+    function playRound(rowChoice, colChoice) {
+        isValidCell = Gameboard.placeMarker(currentPlayer, rowChoice, colChoice);
+        if (isValidCell) {
+            scoreHandler.checkWin();
 
-        if (scoreHandler.getWinner()) {
-            console.log(`Winner: ${currentPlayer.name}!`);
-            currentPlayer.score++;
-            Gameboard.resetBoard();
-            currentPlayer = player2;
-        } else if (scoreHandler.getWinner() === 'tie') {
-            console.log('Tied!');
-            Gameboard.resetBoard();
-            currentPlayer = player2;
+            if (scoreHandler.getWinner()) {
+                console.log(`Winner: ${currentPlayer.name}!`);
+                currentPlayer.score++;
+                winner = currentPlayer;
+                currentPlayer = player1;
+                return scoreHandler.getWinner();
+            } else if (scoreHandler.getWinner() === 'tie') {
+                console.log('Tied!');
+                currentPlayer = player1;
+                return scoreHandler.getWinner();
+            }
+            switchPlayer(currentPlayer);
         }
-        switchPlayer(currentPlayer);
     }
 
     function printNewRound() {
         console.log(`${currentPlayer.name}'s Turn`);
         Gameboard.printBoard();
     }
-    return {playRound, printNewRound}
+
+    const getWinner = () => winner;
+
+    return {playRound, printNewRound, getWinner}
 }());
 
 GameController.printNewRound();
-const playBtn = document.querySelector('.play-btn');
-playBtn.addEventListener('click', () => {
-    GameController.playRound();
-    GameController.printNewRound();
-})
+
+const ScreenController = (function() {
+    const boardContainer = document.querySelector('.board-container');
+    const cellList = document.getElementsByClassName('cell');
+    const board = Gameboard.getBoard();
+    let rowChoice = '';
+    let colChoice = '';
+    
+    boardContainer.addEventListener('click', (e) => {
+        rowChoice = Number(e.target.dataset.row);
+        colChoice = Number(e.target.dataset.col);
+        const isWinner = GameController.playRound(rowChoice, colChoice);
+        updateBoard();
+        if (isWinner) {
+            updateWinner(isWinner);
+        }
+        GameController.printNewRound();
+    })
+    
+    function updateBoard() {
+        let cell = 0;
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[0].length; col++) {
+                if (board[row][col] !== 0) {
+                    cellList[cell].textContent = board[row][col];
+                }
+                cell++;
+            }
+        }
+    }
+    
+    
+    function resetBoard() {
+        Gameboard.resetBoard();
+        for (let cell = 0; cell < cellList.length; cell++) {
+            cellList[cell].textContent = '';
+        }
+    }
+    
+    return {resetBoard};
+})();
+
+const ScreenNotifications = (function() {
+    const winnerContainer = document.querySelector('.winner-container');
+    
+    function updateWinner(isWinner) {
+        const winner = GameController.getWinner();
+        switch (isWinner) {
+            case true:
+                winnerContainer.textContent = `Winner: ${winner.name}`;
+                ScreenController.resetBoard();
+            case 'tie':
+                winnerContainer.textContent = 'tie';
+                ScreenController.resetBoard();
+        }
+    }
+
+})();
+
+/* Data attributes on html divs to associate with .dataset
+use the cell dataset as the choice in selecting a cell
+Might need to use mod and division to get row/column
+if I cant figure out a way to set cell dataset to the index
+of each array item
+Remove play button and refactor to play each round on a cell click
+*/
