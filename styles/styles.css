@@ -36,15 +36,9 @@ body {
 }
 
 /* Main styles */
-
-.winner-container {
-    width: 200px;
-    height: 200px;
-    border: 2px solid blue;
-}
-
-.play-btn {
-    padding: 4rem;
+body {
+    display: grid;
+    grid-template-rows: 1fr 5fr;
 }
 
 .board-container {

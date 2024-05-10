@@ -1,3 +1,8 @@
+/*  TO DO:
+    - Let players input their own names
+    - Score counter update
+*/
+
 /*  Gameboard stored as an array inside an object
     2-D Array, 3 rows and 3 columns
     [   [cell, cell, cell], 
@@ -125,6 +130,8 @@ function GameRules(board, marker) {
 const GameController = (function() {
     const player1 = Player('Player 1', 1);
     const player2 = Player('Player 2', 2);
+    const player1Name = document.querySelector('#player1-name');
+    const player2Name = document.querySelector('#player2-name');
     let currentPlayer = player1;
     let winner = null;
     let isValidCell = false;
@@ -162,6 +169,14 @@ const GameController = (function() {
     }
 
     const getWinner = () => winner;
+
+    player1Name.addEventListener('input', (e) => {
+        player1.name = e.target.value;
+    })
+
+    player2Name.addEventListener('input', (e) => {
+        player2.name = e.target.value;
+    })
 
     return {playRound, printNewRound, getWinner}
 }());
@@ -209,7 +224,6 @@ const ScreenController = (function() {
     
     return {resetBoard};
 })();
-
 
 // Displays a modal with the results of the game and resets the board
 const ScreenNotifications = (function() {
