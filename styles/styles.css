@@ -58,15 +58,9 @@ body {
 }
 
 .info-container {
+    padding-top: 2rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-}
-
-.player {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--player-font-color);
-    place-self: center;
 }
 
 .board-container {
@@ -116,14 +110,33 @@ body {
     background-color: var(--board-hover-color);
 }
 
+.player {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--player-font-color);
+    place-self: center;
+}
+
+.player label {
+    padding-right: 1rem;
+}
+
 .player input {
     border: 0;
     border-radius: 12px;
-    padding-left: 12px;
+    padding: 6px 12px;
 }
 
 .player input:focus-visible {
     outline: 0;
+}
+
+.score-container {
+    display: flex;
+}
+
+.score-label, .score {
+    padding: 1rem;
 }
 
 /* Remove border edges to look like normal Tic-tac-toe */
