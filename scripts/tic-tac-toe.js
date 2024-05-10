@@ -134,16 +134,17 @@ const GameController = (function() {
     const player2 = Player('Player 2', 2);
     let currentPlayer = player1;
     let winner = null;
-    const scoreHandler = GameRules(Gameboard.getBoard(), currentPlayer.marker);
     let isValidCell = false;
-
+    
     function switchPlayer(player) {
         currentPlayer = player.number === 1 ? player2 : player1;
     }
-
+    
     function playRound(rowChoice, colChoice) {
         isValidCell = Gameboard.placeMarker(currentPlayer, rowChoice, colChoice);
         if (isValidCell) {
+            const scoreHandler = GameRules(Gameboard.getBoard(), 
+                                            currentPlayer.marker);
             if (scoreHandler.getWinner() !== false) scoreHandler.resetWinner();
             scoreHandler.checkWin();
 
