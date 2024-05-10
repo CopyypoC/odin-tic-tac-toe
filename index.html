@@ -6,7 +6,6 @@
     <title>Tic-Tac-Toe</title>
     <link rel="stylesheet" href="styles/styles.css">
     <script src="scripts/tic-tac-toe.js" defer></script>
-    <script src="scripts/test.js" defer></script>
 </head>
 <body>
     <div class="info-container">
@@ -17,9 +16,6 @@
             </div>
             <label for="player1-name">Player 1</label>
             <input type="text" id="player1-name">
-        </div>
-        <div class="restart-container">
-            <button class="restart-btn" type="button">Restart</button>
         </div>
         <div class="player player2">
             <div class="score-container">
@@ -40,6 +36,9 @@
         <div data-row="2" data-col="0" class="cell"></div>
         <div data-row="2" data-col="1" class="cell"></div>
         <div data-row="2" data-col="2" class="cell"></div>
+    </div>
+    <div class="restart-container">
+        <button class="restart-btn" type="button">Restart</button>
     </div>
     <dialog class="game-notif">
         <p class="game-results"></p>

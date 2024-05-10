@@ -35,30 +35,100 @@ body {
     font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+/* Custom Properties */
+:root {
+    --main-bg-color: #554348;
+    --board-bg-color: #5e484e;
+    --board-hover-color: #72575e;
+    --board-border-color: #8c9a9e;
+    --board-font-color: #d4f5f5;
+    --player-font-color: #d4f5f5;
+    --restart-bg-color: #89656e;
+    --restart-font-color: #d4f5f5;
+    --restart-hover-color: #a67c87;
+}
+
 /* Main styles */
 body {
-    display: grid;
-    grid-template-rows: 1fr 5fr;
+    background-color: var(--main-bg-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    gap: 3rem;
 }
 
 .info-container {
     display: grid;
-    grid-template-columns: 3fr 1fr 3fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+.player {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--player-font-color);
+    place-self: center;
 }
 
 .board-container {
     display: grid;
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    max-width: 800px;
-    max-width: 800px;
+    place-self: center;
+    width: 100%;
+    max-height: 500px;
+    max-width: 500px;
+}
+
+.restart-container {
+    flex: 1;
+    place-self: center;
+}
+
+.restart-btn {
+    background-color: var(--restart-bg-color);
+    color: var(--restart-font-color);
+    border: 0;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 1rem 5rem;
+}
+
+.restart-btn:hover {
+    background-color: var(--restart-hover-color);
+    cursor: pointer;
 }
 
 .cell {
+    background-color: var(--board-bg-color);
+    aspect-ratio: 1/1;
     display: grid;
     place-items: center;
     font-weight: bold;
     font-size: 5rem;
-    border: 2px solid black;
-    min-width: 200px;
-    min-height: 200px;
+    color: var(--board-font-color);
+    border: 2px solid var(--board-border-color);
+    width: 100%;
+}
+
+.cell:hover {
+    cursor: pointer;
+    background-color: var(--board-hover-color);
+}
+
+/* Remove border edges to look like normal Tic-tac-toe */
+div[data-row="0"] {
+    border-top: 0;
+}
+
+div[data-row="2"] {
+    border-bottom: 0;
+}
+
+div[data-col="0"] {
+    border-left: 0;
+}
+
+div[data-col="2"] {
+    border-right: 0;
 }
