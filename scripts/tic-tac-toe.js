@@ -5,9 +5,6 @@
         [cell, cell, cell] ]
     Places player marker in cells, either X or O
     Prevents placement if cell is populated
-    Expose: - Getting the board
-            - Placing the player marker
-            - Printing board to console (temporary for testing)
 */
 const Gameboard = (function() {
     const rows = 3;
@@ -121,13 +118,9 @@ function GameRules(board, marker) {
     return {checkWin, getWinner, resetWinner};
 };
 
-/*  GameController controls the flow of the game
-    Sets up each player
-    Gets the board
-    Player plays their turn
-    Score conditions checked
-    If win, display winner and update score
-    If no winner, continue
+/*  GameController controls the flow of the game.
+    It sets up the players and handles switching players and
+    the winning conditions checks.
 */
 const GameController = (function() {
     const player1 = Player('Player 1', 1);
@@ -175,6 +168,7 @@ const GameController = (function() {
 
 GameController.printNewRound();
 
+// Updates the DOM board to match the Gameboard
 const ScreenController = (function() {
     const boardContainer = document.querySelector('.board-container');
     const cellList = document.getElementsByClassName('cell');
@@ -216,6 +210,8 @@ const ScreenController = (function() {
     return {resetBoard};
 })();
 
+
+// Displays a modal with the results of the game and resets the board
 const ScreenNotifications = (function() {
     const gameNotif = document.querySelector('.game-notif');
     const gameResults = document.querySelector('.game-results');
@@ -244,11 +240,3 @@ const ScreenNotifications = (function() {
     
     return {updateWinner, showResults};
 })();
-
-/* Data attributes on html divs to associate with .dataset
-use the cell dataset as the choice in selecting a cell
-Might need to use mod and division to get row/column
-if I cant figure out a way to set cell dataset to the index
-of each array item
-Remove play button and refactor to play each round on a cell click
-*/
