@@ -114,7 +114,11 @@ function GameRules(board, marker) {
     }
 
     const getWinner = () => isWinner
-    return {checkWin, getWinner};
+
+    function resetWinner() {
+        isWinner = false;
+    }
+    return {checkWin, getWinner, resetWinner};
 };
 
 /*  GameController controls the flow of the game
@@ -129,7 +133,7 @@ const GameController = (function() {
     const player1 = Player('Player 1', 1);
     const player2 = Player('Player 2', 2);
     let currentPlayer = player1;
-    let winner;
+    let winner = null;
     const scoreHandler = GameRules(Gameboard.getBoard(), currentPlayer.marker);
     let isValidCell = false;
 
@@ -140,6 +144,7 @@ const GameController = (function() {
     function playRound(rowChoice, colChoice) {
         isValidCell = Gameboard.placeMarker(currentPlayer, rowChoice, colChoice);
         if (isValidCell) {
+            if (scoreHandler.getWinner() !== false) scoreHandler.resetWinner();
             scoreHandler.checkWin();
 
             if (scoreHandler.getWinner()) {
@@ -182,7 +187,8 @@ const ScreenController = (function() {
         const isWinner = GameController.playRound(rowChoice, colChoice);
         updateBoard();
         if (isWinner) {
-            updateWinner(isWinner);
+            ScreenNotifications.updateWinner(isWinner);
+            ScreenNotifications.showResults();
         }
         GameController.printNewRound();
     })
@@ -199,7 +205,6 @@ const ScreenController = (function() {
         }
     }
     
-    
     function resetBoard() {
         Gameboard.resetBoard();
         for (let cell = 0; cell < cellList.length; cell++) {
@@ -211,20 +216,32 @@ const ScreenController = (function() {
 })();
 
 const ScreenNotifications = (function() {
-    const winnerContainer = document.querySelector('.winner-container');
-    
+    const gameNotif = document.querySelector('.game-notif');
+    const gameResults = document.querySelector('.game-results');
+    const nextGameBtn = document.querySelector('.next-game-btn');
+
     function updateWinner(isWinner) {
         const winner = GameController.getWinner();
         switch (isWinner) {
             case true:
-                winnerContainer.textContent = `Winner: ${winner.name}`;
-                ScreenController.resetBoard();
+                gameResults.textContent = `Winner: ${winner.name}`;
+                break;
             case 'tie':
-                winnerContainer.textContent = 'tie';
-                ScreenController.resetBoard();
+                gameResults.textContent = 'tie';
+                break;
         }
     }
+    
+    function showResults() {
+        gameNotif.showModal();
+    }
 
+    nextGameBtn.addEventListener('click', () => {
+        gameNotif.close();
+        ScreenController.resetBoard();
+    })
+    
+    return {updateWinner, showResults};
 })();
 
 /* Data attributes on html divs to associate with .dataset
