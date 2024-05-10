@@ -110,6 +110,7 @@ body {
     background-color: var(--board-hover-color);
 }
 
+/* Player styles */
 .player {
     font-size: 1.3rem;
     font-weight: bold;
@@ -154,4 +155,27 @@ div[data-col="0"] {
 
 div[data-col="2"] {
     border-right: 0;
+}
+
+/* Game results modal styles */
+.game-notif {
+    font-size: 1.5rem;
+    padding: 3rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.game-results {
+    padding: 1rem;
+}
+
+.close-results-container {
+    display: grid;
+    place-items: center;
+}
+
+.close-results-btn {
+    padding: 1rem 2rem;
+    margin: auto;
 }
