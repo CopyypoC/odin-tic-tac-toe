@@ -10,14 +10,25 @@
 </head>
 <body>
     <div class="players-container">
-        <div class="player">
+        <div class="player player1">
+            <div class="score-container">
+                <p class="score-label">Score</p>
+                <p class="score">0</p>
+            </div>
             <label for="player1-name">Player 1</label>
             <input type="text" id="player1-name">
         </div>
-        <div class="player">
+        <div class="player player2">
+            <div class="score-container">
+                <p class="score-label">Score</p>
+                <p class="score">0</p>
+            </div>
             <label for="player2-name">Player 2</label>
             <input type="text" id="player2-name">
         </div>
+    </div>
+    <div class="restart-container">
+        <button class="restart-btn" type="button">Restart</button>
     </div>
     <div class="board-container">
         <div data-row="0" data-col="0" class="cell"></div>
@@ -32,7 +43,7 @@
     </div>
     <dialog class="game-notif">
         <p class="game-results"></p>
-        <button class="next-game-btn" type="button">Next Game</button>
+        <button class="close-results-btn" type="button">Close</button>
     </dialog>
 </body>
 </html>

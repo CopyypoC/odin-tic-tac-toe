@@ -58,7 +58,7 @@ function Player(name, number) {
     return {name, number, marker, score};
 }
 
-/*  Score checks rows, columns, and diagonals for all three cells and if
+/*  GameRules checks rows, columns, and diagonals for all three cells and if
     they match (same marker in each) then that player wins the round
 */
 function GameRules(board, marker) {
@@ -170,6 +170,12 @@ const GameController = (function() {
 
     const getWinner = () => winner;
 
+    const getPlayer = () => currentPlayer;
+
+    function resetPlayer() {
+        currentPlayer = player1;
+    }
+
     player1Name.addEventListener('input', (e) => {
         player1.name = e.target.value;
     })
@@ -178,7 +184,7 @@ const GameController = (function() {
         player2.name = e.target.value;
     })
 
-    return {playRound, printNewRound, getWinner}
+    return {playRound, printNewRound, getWinner, getPlayer}
 }());
 
 GameController.printNewRound();
@@ -229,13 +235,20 @@ const ScreenController = (function() {
 const ScreenNotifications = (function() {
     const gameNotif = document.querySelector('.game-notif');
     const gameResults = document.querySelector('.game-results');
-    const nextGameBtn = document.querySelector('.next-game-btn');
+    const closeResultsBtn = document.querySelector('.close-results-btn');
+    const player1Score = document.querySelector('.player1 .score')
+    const player2Score = document.querySelector('.player2 .score')
 
     function updateWinner(isWinner) {
         const winner = GameController.getWinner();
         switch (isWinner) {
             case true:
                 gameResults.textContent = `Winner: ${winner.name}`;
+                if (winner.number === 1) {
+                    player1Score.textContent = winner.score;
+                } else {
+                    player2Score.textContent = winner.score;
+                }
                 break;
             case 'tie':
                 gameResults.textContent = 'tie';
@@ -247,7 +260,7 @@ const ScreenNotifications = (function() {
         gameNotif.showModal();
     }
 
-    nextGameBtn.addEventListener('click', () => {
+    closeResultsBtn.addEventListener('click', () => {
         gameNotif.close();
         ScreenController.resetBoard();
     })
