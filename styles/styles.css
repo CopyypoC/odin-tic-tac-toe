@@ -134,10 +134,11 @@ body {
 
 .score-container {
     display: flex;
+    padding-top: 1rem;
 }
 
-.score-label, .score {
-    padding: 1rem;
+.score {
+    padding-left: 1rem;
 }
 
 /* Remove border edges to look like normal Tic-tac-toe */
